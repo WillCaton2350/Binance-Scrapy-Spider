@@ -1,3 +1,5 @@
+from psycopg2.errors import ConnectionFailure
+from psycopg2.errors import DataError
 import psycopg2
 import logging
 
@@ -6,25 +8,27 @@ class WebScraperPipeline:
         self.create_connection()
 
     def create_connection(self):
-        self.conn = psycopg2.connect(
-            host='localhost',
-            user='postgres',
-            password='d@nmmoC5354',
-            database='binance_DB',
-            port = '5433'
-        )
-
+        try:
+            self.conn = psycopg2.connect(
+                host='localhost',
+                user='postgres',
+                password='d@nmmoC5354',
+                database='binance_DB',
+                port = '5433'
+            )
+        except ConnectionFailure as err:
+            logging.error(f'{err}')
         self.cur = self.conn.cursor()
         self.cur.execute("""CREATE TABLE IF NOT EXISTS binance_tb 
             (
-                url character(10000),
-                pair_name character(10000),
-                pair_price character(10000),
-                daily_change character(10000),
-                daily_high character(10000),
-                daily_low character(10000),
-                volume character(10000),
-                market_cap character(10000)
+                url character(1000),
+                pair_name character(1000),
+                pair_price character(1000),
+                daily_change character(1000),
+                daily_high character(1000),
+                daily_low character(1000),
+                volume character(1000),
+                market_cap character(1000)
             )
         """)
         self.conn.commit()
@@ -59,7 +63,7 @@ class WebScraperPipeline:
                 item['volume'],
                 item['market_cap']
             ))
-        except BaseException as err:
+        except DataError as err:
             logging.error(f'{err}')
         self.conn.commit()
         
