@@ -11,10 +11,10 @@ class WebScraperPipeline:
         try:
             self.conn = psycopg2.connect(
                 host='localhost',
-                user='postgres',
-                password='d@nmmoC5354',
-                database='binance_DB',
-                port = '5433'
+                user='user',
+                password='password',
+                database='database',
+                port = '0000'
             )
         except ConnectionFailure as err:
             logging.error(f'{err}')
